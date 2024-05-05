@@ -2,9 +2,11 @@ DESCRIPTION = "Microsoft .NET Core Install Scripts"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
+BB_STRICT_CHECKSUM = "0"
+
 SRC_URI = "\
-    https://dot.net/v1/dotnet-install.sh;sha256sum=5eb82d8578f55cdadcb2edfd35ec649a2c6fc11a682e876b1cd68077badbf794 \
-    https://aka.ms/getvsdbgsh;sha256sum=827b0f965072c06afcc2bb7cf50af35952951b0475a0cd1ee83f927de39b2fc7 \
+    https://dot.net/v1/dotnet-install.sh \
+    https://aka.ms/getvsdbgsh \
 "
 
 RDEPENDS:${PN} = "\

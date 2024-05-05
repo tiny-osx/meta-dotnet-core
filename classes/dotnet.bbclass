@@ -9,7 +9,21 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 INHIBIT_PACKAGE_STRIP = "1"
 
-B = "${WORKDIR}/artifacts"
+RDEPENDS:${PN} = "\
+    glibc \
+    icu \
+    krb5 \
+    libgcc \
+    libstdc++ \
+    ca-certificates \
+    openssl \
+"
+INSANE_SKIP:${PN} += " \
+    file-rdeps \
+    already-stripped \
+"
+
+do_compile[network] = "1" 
 
 python () {
     target_arch = d.getVar("TARGET_ARCH")
@@ -25,46 +39,3 @@ python () {
 
     bb.fatal("Architecture not supported: " + target_arch)
 }
-
-dotnet_do_configure() {
-    
-    if [ -z ${DOTNET_PROJECT} ] ; then
-        bberror "DOTNET_PROJECT must be specified!"
-        exit -1
-    fi
-}
-
-do_compile[network] = "1" 
-dotnet_do_compile()  {
-
-# if [ "${TARGET_ARCH}" = "x86_64" ]; then
-#     BUILD_TARGET="linux-x64"
-# elif [ "${TARGET_ARCH}" = "aarch64" ]; then
-#     BUILD_TARGET="linux-arm64"
-# else
-#     BUILD_TARGET="linux-arm"
-# fi
-
-    dotnet publish \
-        ${WORKDIR}/${DOTNET_PROJECT} \
-        --configuration Release \
-        --runtime ${BUILD_TARGET} \
-        --self-contained true \
-        -p:PublishReadyToRun=true \
-        --output ${B}      
-}
-
-# dotnet publish -c Release -p:PublishTrimmed=true -o ${B} -r ${BUILD_TARGET} --self-contained true ${DOTNET_PROJECT}
-
-FILES:${PN} += "\
-    ${datadir}/console \
-"
-
-dotnet_do_install() {
-    install -d ${D}${datadir}/console
-#    install -m ${B} ${D}${datadir}/console
-#    cp -rf ${B}/* ${D}${datadir}/console
-#    chmod +x ${D}${datadir}/console/Console
-}
-
-EXPORT_FUNCTIONS do_configure do_compile do_install
