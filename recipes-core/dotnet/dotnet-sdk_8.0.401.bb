@@ -5,13 +5,15 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 include dotnet.inc
 
-SRC_FILE:arm ?= "dotnet-sdk-${PV}-linux-arm.tar.gz"
-SRC_FETCH_ID:arm ?= "2344ad1d-ce80-4d98-bf9c-f935576deb39/591ea75057045e2284a7d70d5dd01bc5"
-SRC_SHA512SUM:arm ?= "92760c4a4f3bf559daa41b8b87d7f10995aa5ae11783af053d854e8b9e8b042cf6e984bda40490aff051e4463f7cc8ed25d905090e5cee029c81afdb7f8b32c2"
+# SRC_FILE:arm ?= "dotnet-sdk-${PV}-linux-arm.tar.gz"
+# SRC_FETCH_ID:arm ?= "2344ad1d-ce80-4d98-bf9c-f935576deb39/591ea75057045e2284a7d70d5dd01bc5"
+# SRC_SHA512SUM:arm ?= "92760c4a4f3bf559daa41b8b87d7f10995aa5ae11783af053d854e8b9e8b042cf6e984bda40490aff051e4463f7cc8ed25d905090e5cee029c81afdb7f8b32c2"
+
+# https://download.visualstudio.microsoft.com/download/pr/14742499-fc32-461e-bdb8-67b147763eee/c14113944f734526153f1aaac38ddfca/dotnet-sdk-8.0.401-linux-arm64.tar.gz
 
 SRC_FILE:aarch64 ?= "dotnet-sdk-${PV}-linux-arm64.tar.gz"
-SRC_FETCH_ID:aarch64 ?= "3bebb4ec-8bb7-4854-b0a2-064bf50805eb/38e6972473f83f11963245ffd940b396"
-SRC_SHA512SUM:aarch64 ?= "37e230970cfeffdc3873e42595b79ecdf6bfe266a01ace6953725e69a2b64313ce144bf4d4f861130f61f680ead9b4d8a819dd5543c5470c37bbc13d88a78c80"
+SRC_FETCH_ID:aarch64 ?= "14742499-fc32-461e-bdb8-67b147763eee/c14113944f734526153f1aaac38ddfca"
+SRC_SHA512SUM:aarch64 ?= "e8738b21351d030a83be644571f3674c8dda9e6fbd360b221907a7108fab02becd18e1331907535a1294d8c4d0f608519674c27c77dc2c2803cc53cce3e10e0d"
 
 COMPATIBLE_HOST ?= "(arm|aarch64).*-linux"
 

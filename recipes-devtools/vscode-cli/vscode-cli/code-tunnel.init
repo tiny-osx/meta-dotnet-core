@@ -1,0 +1,100 @@
+#!/bin/sh
+# /etc/init.d/code-tunnel
+
+### BEGIN INIT INFO
+# Provides:          code-tunnel
+# Required-Start:    $local_fs $network  
+# Required-Stop:     $local_fs $network
+# Default-Start:     
+# Default-Stop:      
+# Short-Description: Start code-tunnel daemon at boot time
+# Description:       Enable Visual Studio Code Server provided by code-tunnel daemon. 
+### END INIT INFO
+
+set -e
+
+DAEMON=/usr/share/vscode/code
+DAEMON_NAME=code-tunnel
+DAEMON_ARGS="tunnel --log error --accept-server-license-terms"
+
+RUNAS=root
+LOGFILE=/var/log/$DAEMON_NAME
+PIDFILE=/var/run/$DAEMON_NAME.pid
+
+test -x $DAEMON || exit 0
+
+start() {  
+
+  if [ -f $PIDFILE ]; then
+    if kill -0 $(cat "$PIDFILE"); then
+      echo "$DAEMON_NAME is already running with pid $(cat "$PIDFILE")"
+      exit 0
+    fi
+  fi
+
+  export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+
+  start-stop-daemon --start \
+    --oknodo \
+    --quiet \
+    --background \
+    --user $RUNAS \
+    --make-pidfile \
+    --pidfile $PIDFILE \
+    --exec /bin/sh \
+    -- -c "$DAEMON $DAEMON_ARGS >> $LOGFILE 2>&1 & echo "\$!" > $PIDFILE" 
+}
+
+stop() {  
+  start-stop-daemon --stop \
+    --oknodo \
+    --quiet \
+    --retry INT/30/KILL/5 \
+    --pidfile $PIDFILE 
+  
+  rm -f $PIDFILE
+
+  pids=$(ps aux | grep 'serve-web' | grep -v grep | awk '{print $2}')
+  if [ -n "$pids" ]; then
+    echo $pids | xargs kill -9
+  fi
+}
+
+status(){
+  if [ -f $PIDFILE ]; then
+    if kill -0 $(cat "$PIDFILE"); then
+      echo "$DAEMON_NAME is running with pid $(cat "$PIDFILE")"
+      exit 0
+    fi
+  fi
+
+  echo "$DAEMON_NAME is not running"
+  exit 1;
+}
+
+uninstall() {
+  stop
+  rm -f "$PIDFILE"
+  update-rc.d -f $DAEMON_NAME remove
+  rm -fv "$0"
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  uninstall)
+    uninstall
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status|uninstall}"
+    exit 1
+esac
+
+exit $?
