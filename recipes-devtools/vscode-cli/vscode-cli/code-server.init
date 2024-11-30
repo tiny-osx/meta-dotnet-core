@@ -35,17 +35,19 @@ start() {
     fi
   fi
 
+  export HOME=/home/$RUNAS
   export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 
   start-stop-daemon --start \
     --oknodo \
     --quiet \
     --background \
-    --user $RUNAS \
+    --chuid $RUNAS \
     --make-pidfile \
     --pidfile $PIDFILE \
-    --exec /bin/sh \
-    -- -c "$DAEMON $DAEMON_ARGS >> $LOGFILE 2>&1 & echo "\$!" > $PIDFILE" 
+    --exec $DAEMON \
+    -- $DAEMON_ARGS >> $LOGFILE 2>&1 & echo "\$!" > $PIDFILE 
+
 }
 
 stop() {  
